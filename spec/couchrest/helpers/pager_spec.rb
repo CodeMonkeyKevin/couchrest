@@ -12,7 +12,7 @@ describe CouchRest::Pager do
   after(:all) do
     begin
       @db.delete!
-    rescue RestClient::Request::RequestFailed
+    rescue CouchRest::RequestFailed
     end
   end
   

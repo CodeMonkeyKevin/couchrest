@@ -138,7 +138,7 @@ describe CouchRest do
     #    end
     it "should not create the database automatically" do
       db = CouchRest.database "http://127.0.0.1:5984/couchrest-test"
-      lambda{db.info}.should raise_error(RestClient::ResourceNotFound)      
+      lambda{db.info}.should raise_error(CouchRest::ResourceNotFound)      
     end
   end
 
@@ -174,17 +174,17 @@ describe CouchRest do
     it "should PUT the database and raise an error" do
       lambda{
         @cr.create_db(TESTDB)
-      }.should raise_error(RestClient::Request::RequestFailed)
+      }.should raise_error(CouchRest::RequestFailed)
     end
   end
 
-  describe "using a proxy for RestClient connections" do
-    it "should set proxy url for RestClient" do
-      CouchRest.proxy 'http://localhost:8888/'
-      proxy_uri = URI.parse(RestClient.proxy)
+  describe "using a proxy for HttpClient connections" do
+    it "should set proxy url for HttpClient" do
+      CouchRest.proxy = 'http://localhost:8888/'
+      proxy_uri = URI.parse(CouchRest.proxy)
       proxy_uri.host.should eql( 'localhost' )
       proxy_uri.port.should eql( 8888 )
-      CouchRest.proxy nil
+      CouchRest.proxy = nil
     end
   end
 

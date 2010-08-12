@@ -1,11 +1,11 @@
 # Copyright 2008 J. Chris Anderson
-# 
+#
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
 #    You may obtain a copy of the License at
-# 
+#
 #        http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #    Unless required by applicable law or agreed to in writing, software
 #    distributed under the License is distributed on an "AS IS" BASIS,
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,18 +13,17 @@
 #    limitations under the License.
 
 require 'rubygems'
-gem 'rest-client', ">= 1.5.1"
 unless Kernel.const_defined?("JSON")
   gem 'json', '>= 1.4.6'
   require 'json'
 end
-require 'rest_client'
+require 'curb'
 
 # Not sure why this is required, so removed until a reason is found!
 $:.unshift File.dirname(__FILE__) unless
- $:.include?(File.dirname(__FILE__)) ||
- $:.include?(File.expand_path(File.dirname(__FILE__)))
-    
+$:.include?(File.dirname(__FILE__)) ||
+  $:.include?(File.expand_path(File.dirname(__FILE__)))
+
 require 'couchrest/monkeypatches'
 require 'couchrest/rest_api'
 require 'couchrest/support/inheritable_attributes'
@@ -32,7 +31,7 @@ require 'couchrest/support/inheritable_attributes'
 # = CouchDB, close to the metal
 module CouchRest
   VERSION    = '1.0.0'
-  
+
   autoload :Server,       'couchrest/server'
   autoload :Database,     'couchrest/database'
   autoload :Response,     'couchrest/response'
@@ -43,22 +42,26 @@ module CouchRest
   autoload :Streamer,     'couchrest/helper/streamer'
   autoload :Attachments,  'couchrest/helper/attachments'
   autoload :Upgrade,      'couchrest/helper/upgrade'
- 
+  autoload :HttpClient,   'couchrest/http_client/http_client'
+  autoload :Exceptions,   'couchrest/http_client/exceptions'
+
   # we extend CouchRest with the RestAPI module which gives us acess to
   # the get, post, put, delete and copy
   CouchRest.extend(::RestAPI)
-  
-  # The CouchRest module methods handle the basic JSON serialization 
+
+  # The CouchRest module methods handle the basic JSON serialization
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.
   class << self
+    attr_accessor :proxy_url, :http_client
 
     # todo, make this parse the url and instantiate a Server or Database instance
     # depending on the specificity.
     def new(*opts)
+      @http_client = CouchRest::HttpClient.new
       Server.new(*opts)
     end
-    
+
     def parse url
       case url
       when /^(https?:\/\/)(.*)\/(.*)\/(.*)/
@@ -94,10 +97,14 @@ module CouchRest
     end
 
     # set proxy to use
-    def proxy url
-      RestClient.proxy = url
+    def proxy=(url)
+      @proxy_url = url
     end
-    
+
+    def proxy
+      @proxy_url
+    end
+
     # ensure that a database exists
     # creates it if it isn't already there
     # returns it after it's been created

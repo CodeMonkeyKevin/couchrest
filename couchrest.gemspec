@@ -101,11 +101,13 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rest-client>, [">= 1.5.1"])
       s.add_dependency(%q<mime-types>, [">= 1.15"])
       s.add_dependency(%q<json>, [">= 1.4.6"])
+      s.add_dependency(%q<curb>, [">=0.7.7.1"])
     end
   else
     s.add_dependency(%q<rest-client>, [">= 1.5.1"])
     s.add_dependency(%q<mime-types>, [">= 1.15"])
     s.add_dependency(%q<json>, [">= 1.4.6"])
+    s.add_dependency(%q<curb>, [">=0.7.7.1"])
   end
 end
 

@@ -73,7 +73,7 @@ module CouchRest
     # Restart the CouchDB instance
     def restart!
       CouchRest.post "#{@uri}/_restart"
-    rescue RestClient::ServerBrokeConnection
+    rescue CouchRest::ServerBrokeConnection
       # Shouldn't really happen, but does in CouchDB 1.0.0
     end
 
