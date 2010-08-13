@@ -53,11 +53,8 @@ module RestAPI
     JSON.parse(http_client.delete(uri, headers))
   end
 
-  # def copy(uri, destination) 
-  #   JSON.parse(RestClient::Request.execute( :method => :copy,
-  #                                           :url => uri,
-  #                                           :headers => default_headers.merge('Destination' => destination)
-  #                                         ).to_s)
-  # end
+  def copy(uri, destination) 
+    JSON.parse(http_client.copy(uri, default_headers.merge('Destination' => destination)))
+  end
 
 end

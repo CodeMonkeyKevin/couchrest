@@ -37,10 +37,12 @@ module CouchRest
       return!(@client.response_code, @client.body_str)
     end
 
-    # TODO: add copy method to curb
-    # def copy(uri, destination) 
-      #
-    # end
+    def copy(uri, headers = CouchRest.default_headers)
+      @client.url = uri
+      @client.headers = headers
+      @client.http('COPY')
+      return!(@client.response_code, @client.body_str)
+    end
 
   private
     def return! code, body
