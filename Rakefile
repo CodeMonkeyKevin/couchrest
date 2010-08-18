@@ -28,7 +28,7 @@ begin
     gemspec.has_rdoc = true
     gemspec.add_dependency("rest-client", ">= 1.5.1")
     gemspec.add_dependency("mime-types", ">= 1.15")
-    gemspec.add_dependency("json", ">= 1.4.6")
+    gemspec.add_dependency("yajl-ruby", ">= 0.7.7")
     gemspec.version = CouchRest::VERSION
     gemspec.date = Time.now.strftime("%Y-%m-%d")
     gemspec.require_path = "lib"

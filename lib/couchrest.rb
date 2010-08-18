@@ -14,8 +14,8 @@
 
 require 'rubygems'
 unless Kernel.const_defined?("JSON")
-  gem 'json', '>= 1.4.6'
-  require 'json'
+  gem 'yajl-ruby', '>= 0.7.7'
+  require 'yajl/json_gem'
 end
 require 'rest_client'
 
