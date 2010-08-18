@@ -17,13 +17,16 @@ unless Kernel.const_defined?("JSON")
   gem 'json', '>= 1.4.6'
   require 'json'
 end
-require 'curb'
+require 'rest_client'
 
 # Not sure why this is required, so removed until a reason is found!
 $:.unshift File.dirname(__FILE__) unless
 $:.include?(File.dirname(__FILE__)) ||
   $:.include?(File.expand_path(File.dirname(__FILE__)))
 
+require 'couchrest/http_client/http_adapter/rest_client/rest_client_mod'
+require 'couchrest/http_client/http_adapter/rest_client'
+require 'couchrest/http_client/http_adapter/curb'
 require 'couchrest/monkeypatches'
 require 'couchrest/rest_api'
 require 'couchrest/support/inheritable_attributes'
@@ -53,12 +56,12 @@ module CouchRest
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.
   class << self
-    attr_accessor :proxy_url, :http_client
+    attr_accessor :proxy_url, :http_client, :adapter
 
     # todo, make this parse the url and instantiate a Server or Database instance
     # depending on the specificity.
     def new(*opts)
-      @http_client = CouchRest::HttpClient.new
+      @http_client = CouchRest::HttpClient.new(@adapter)
       Server.new(*opts)
     end
 

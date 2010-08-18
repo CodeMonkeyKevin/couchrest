@@ -1,47 +1,35 @@
 module CouchRest
   class HttpClient
-    attr_accessor :client, :username, :password
+    attr_accessor :client
 
-    def initialize
-      @client = Curl::Easy.new
-      @client.http_auth_types = :basic
-      @client.proxy_url = CouchRest.proxy_url
-      @client
+    def initialize(adapter)
+      adapter ||= :restclient
+      @client = eval("HttpAdapter::#{adapter.to_s.capitalize}").new(CouchRest.proxy_url)
     end
 
     def put(uri, payload, headers = CouchRest.default_headers)
-      @client.url = uri
-      @client.headers = headers
-      @client.http_put(payload.to_s)
-      return!(@client.response_code, @client.body_str)
+      code, body, header = @client.put(uri, payload, headers)
+      return!(code, body)
     end
 
     def get(uri, headers = CouchRest.default_headers)
-      @client.url = uri
-      @client.headers = headers
-      @client.http_get
-      return!(@client.response_code, @client.body_str)
+      code, body, header = @client.get(uri, headers)
+      return!(code, body)
     end
 
     def post(uri, payload, headers = CouchRest.default_headers)
-      @client.url = uri
-      @client.headers = headers
-      @client.http_post(payload.to_s)
-      return!(@client.response_code, @client.body_str)
+      code, body, header = @client.post(uri, payload, headers)
+      return!(code, body)
     end
 
     def delete(uri, headers = CouchRest.default_headers)
-      @client.url = uri
-      @client.headers = headers
-      @client.http_delete
-      return!(@client.response_code, @client.body_str)
+      code, body, header = @client.delete(uri, headers)
+      return!(code, body)
     end
 
     def copy(uri, headers = CouchRest.default_headers)
-      @client.url = uri
-      @client.headers = headers
-      @client.http('COPY')
-      return!(@client.response_code, @client.body_str)
+      code, body, header = @client.copy(uri, headers)
+      return!(code, body)
     end
 
   private

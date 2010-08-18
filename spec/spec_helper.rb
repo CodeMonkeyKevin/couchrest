@@ -14,6 +14,8 @@ unless defined?(FIXTURE_PATH)
   TEST_SERVER    = CouchRest.new COUCHHOST
   TEST_SERVER.default_database = TESTDB
   DB = TEST_SERVER.database(TESTDB)
+
+  ADAPTER = ENV['ADAPTER'] || :restclient
 end
 
 def reset_test_db!
@@ -22,7 +24,7 @@ def reset_test_db!
 end
 
 Spec::Runner.configure do |config|
-  config.before(:all) { reset_test_db! }
+  config.before(:all) { reset_test_db!; CouchRest.adapter = ADAPTER }
   
   config.after(:all) do
     cr = TEST_SERVER
