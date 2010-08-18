@@ -2,8 +2,8 @@ module RestAPI
 
   def default_headers
     {
-      :content_type => :json,
-      :accept       => :json
+      'content-type' => 'application/json',
+      'accept'       => 'application/json'
     }
   end
 
